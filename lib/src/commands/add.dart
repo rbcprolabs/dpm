@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:pubspec/pubspec.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tuple/tuple.dart';
+import 'package:yamlicious/yamlicious.dart';
 import 'get.dart';
 
 final RegExp _gitPkg = RegExp(r'^([^@]+)@git://([^#]+)(#(.+))?$');
@@ -99,7 +100,8 @@ class AddCommand extends Command {
       }
 
       if (argResults['dry-run']) {
-        return Logger().info(YamlToString().toYamlString(pubspec.toJson()));
+        return Logger().info(toYamlString(pubspec.toJson()));
+        // return Logger().info(YamlToString().toYamlString(pubspec.toJson()));
       } else {
         await pubspec.save(Directory.current);
         Logger().success('Now installing dependencies...');

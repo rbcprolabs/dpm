@@ -3,6 +3,7 @@ import 'package:args/command_runner.dart';
 import 'package:dpm/src/commands/get.dart';
 import 'package:dpm/src/services/logger.dart';
 import 'package:pubspec/pubspec.dart';
+import 'package:yamlicious/yamlicious.dart';
 
 class RemoveCommand extends Command {
   RemoveCommand() {
@@ -62,7 +63,8 @@ class RemoveCommand extends Command {
       }
 
       if (argResults['dry-run']) {
-        return Logger().info(YamlToString().toYamlString(pubspec.toJson()));
+        return Logger().info(toYamlString(pubspec.toJson()));
+        // return Logger().info(YamlToString().toYamlString(pubspec.toJson()));
       } else if (totalTargetCount != targetDependencies.length) {
         await pubspec.save(Directory.current);
         return _get.run();

@@ -1,6 +1,6 @@
 name: dpm
 author: Serge Shkurko <SergeShkurko@outlook.com>
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/rbcprolabs/dpm
 description: Run commands upon installing Dart packages, and more.
 environment:
@@ -23,10 +23,9 @@ dependencies:
   yaml: ^2.1.16
   colorize: ^2.0.0
   tuple: ^1.0.2
+  yamlicious: ^0.1.0
 dev_dependencies:
   test: ^1.6.5
   pedantic: ^1.8.0+1
 executables:
   dpm: dpm
-scripts:
-  post_get: echo "hello :)"

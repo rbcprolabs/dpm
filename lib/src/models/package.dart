@@ -38,7 +38,7 @@ class PubPackage {
     return _pubCachePath = path.join(homeDir, '.pub-cache');
   }
 
-  /// TODO(Serge): provide support for [path] dependencies
+  // TODO(Serge): provide support for [path] dependencies
   Directory get location {
     if (source == 'hosted') {
       return Directory(path.join(
