@@ -14,11 +14,11 @@ class Publock {
   factory Publock.fromMap(YamlMap data) {
     final packages = <PubPackage>[], sdks = <PubLockSdk>[];
 
-    data['packages'].forEach((name, data) {
-      packages.add(PubPackage.fromMap({'name': name}..addAll(data)));
+    (data['packages'] as YamlMap).forEach((name, data) {
+      packages.add(PubPackage.fromMap({'name': name, ...data}));
     });
 
-    data['sdks'].forEach((name, version) {
+    (data['sdks'] as YamlMap).forEach((name, version) {
       sdks.add(PubLockSdk(name, version));
     });
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dpm/src/models/package_description.dart';
+import 'package:dpm/src/services/settings.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 import 'package:pubspec/pubspec.dart';
@@ -20,32 +21,40 @@ class PubPackage {
         version: data['version'],
       );
 
-  static String _pubCachePath;
+  final String pubCachePath = Settings.pubCachePath;
   final PackageDescription description;
   final String name, source, version;
 
-  static String get pubCachePath {
-    if (_pubCachePath != null) {
-      return _pubCachePath;
-    }
-
-    if (Platform.isWindows) {
-      final appdata = Platform.environment['APPDATA'];
-      return _pubCachePath = path.join(appdata, 'Pub', 'Cache');
-    }
-
-    final homeDir = Platform.environment['HOME'];
-    return _pubCachePath = path.join(homeDir, '.pub-cache');
-  }
-
-  // TODO(Serge): provide support for [path] dependencies
   Directory get location {
-    if (source == 'hosted') {
+    if (source == 'sdk' && description.sdk == 'flutter') {
+      final flutterSdkLocation = Settings().flutterSdkLocation;
+      final packagePath =
+          Directory(path.join(flutterSdkLocation, 'packages', name));
+      if (packagePath.existsSync()) {
+        return packagePath;
+      }
+
+      final cachePath =
+          Directory(path.join(flutterSdkLocation, 'bin', 'cache', 'pkg', name));
+      if (cachePath.existsSync()) {
+        return cachePath;
+      }
+      return null;
+    } else if (source == 'hosted') {
       return Directory(path.join(
           pubCachePath, 'hosted', 'pub.dartlang.org', '$name-$version'));
     } else if (source == 'git') {
       return Directory(
           path.join(pubCachePath, 'git', '$name-${description.resolvedRef}'));
+    } else if (source == 'path') {
+      return Directory(
+        description.relative
+            ? path.join(
+                Directory.current.path,
+                description.path,
+              )
+            : description.path,
+      );
     } else {
       throw UnsupportedError(
           'Unsupported source for package $name in pubspec.lock: $source');
