@@ -53,7 +53,8 @@ class InitCommand extends Command {
     String gitUrl;
 
     try {
-      final result = await Process.run('git', ['remote', 'get-url', 'origin']);
+      final result = await Process.run('git', ['remote', 'get-url', 'origin'],
+          runInShell: true);
 
       if (result.exitCode == 0) {
         final stdout = await result.stdout.trim();

@@ -11,3 +11,10 @@ class ScriptDoesNotExistException implements Exception {
   @override
   String toString() => message;
 }
+
+class InsufficientPrivilegesException implements Exception {
+  InsufficientPrivilegesException(this.message);
+  final String message;
+  @override
+  String toString() => message;
+}

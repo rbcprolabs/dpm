@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:args/command_runner.dart';
+import 'package:dpm/src/services/logger.dart';
 import 'package:pubspec/pubspec.dart';
 import 'package:dpm/dpm.dart';
 
@@ -26,15 +27,15 @@ void main(List<String> args) async {
         try {
           await runScript(pubspec, arg);
         } on ScriptDoesNotExistException catch (exception) {
-          stderr.writeln(exception.message);
+          Logger().error(exception.message);
           return exit(1);
         } catch (_exception, stackTrace) {
-          stderr..writeln('ERR: $_exception')..writeln(stackTrace);
+          Logger().error('ERR: $_exception \n $stackTrace');
           return exit(1);
         }
       }
     } else {
-      stderr.writeln(exception);
+      Logger().error(exception.toString());
       return exit(1);
     }
   }

@@ -15,6 +15,9 @@ class PubContext {
 
   final bool isFlutter;
 
-  Future<ProcessResult> run(List<String> arguments) =>
-      Process.run(!isFlutter ? 'pub' : 'flutter packages', arguments);
+  Future<Process> start(List<String> arguments) => Process.start(
+        !isFlutter ? 'pub' : 'flutter packages',
+        arguments,
+        runInShell: true,
+      );
 }

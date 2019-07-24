@@ -1,8 +1,8 @@
 name: dpm
 author: Serge Shkurko <SergeShkurko@outlook.com>
-version: 0.0.2
+version: 0.1.0
 homepage: https://github.com/rbcprolabs/dpm
-description: Run commands upon installing Dart packages, and more.
+description: Run commands upon installing & upgrades packages, powerfull package management with CLI. Flutter cappatible!
 environment:
   sdk: '>=2.3.0-dev.0.5 <3.0.0'
 dependencies:

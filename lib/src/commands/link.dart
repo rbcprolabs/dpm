@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:args/command_runner.dart';
+import 'package:dpm/src/exceptions.dart';
 import 'package:dpm/src/services/publock_loader.dart';
 import 'package:dpm/src/services/logger.dart';
 
@@ -31,8 +32,12 @@ class LinkCommand extends Command {
   Future<void> run() async {
     final lock = await loadPublock();
     final Directory bin =
-        Directory.fromUri(Directory.current.uri.resolve('./.dpm_bin'));
+        Directory.fromUri(Directory.current.uri.resolve('.dpm_bin'));
     final packageRoot = Directory.fromUri(bin.uri.resolve('./package-root'));
+
+    if (Platform.isWindows) {
+      await _hasPermissionWindows();
+    }
 
     if (!await packageRoot.exists()) {
       await packageRoot.create(recursive: true);
@@ -49,43 +54,72 @@ class LinkCommand extends Command {
 
       final uri = pkg.location.absolute.uri
           .resolve('./lib')
-          .toString()
+          .toFilePath(windows: Platform.isWindows)
           .replaceAll(_file, '');
-      await link.create(uri);
+
+      File(uri + '/test.test').createSync();
+
+      await link.create(uri, recursive: true);
     }
 
     for (final pkg in lock.packages) {
       final pubspec = await pkg.readPubspec();
       final Map executables = pubspec.unParsedYaml['executables'];
 
-      if (executables != null) {
-        for (final name in executables.keys) {
-          final scriptName =
-              executables[name].isNotEmpty ? executables[name] : name;
-          final scriptFile =
-              File.fromUri(pkg.location.uri.resolve('./bin/$scriptName.dart'));
-          final path = scriptFile.absolute.path;
+      if (executables == null) {
+        continue;
+      }
 
-          // Generate snapshot
-          final snapshot =
-              File.fromUri(pkg.location.uri.resolve('$name.snapshot.dart'));
-          final result = await Process.run(Platform.executable, [
-            '--snapshot=${snapshot.path}',
-            '--package-root=${packageRoot.path}',
-            path
-          ]);
+      for (final name in executables.keys) {
+        final scriptName =
+            executables[name].isNotEmpty ? executables[name] : name;
+        final scriptFile =
+            File.fromUri(pkg.location.uri.resolve('./bin/$scriptName.dart'));
+        final path = scriptFile.absolute.path;
 
-          if (result.stderr.isNotEmpty) {
-            stderr.writeln(result.stderr);
-            throw Exception("Could not create snapshot for package '$name'.");
-          }
+        // Generate snapshot
+        final snapshot =
+            File.fromUri(pkg.location.uri.resolve('$name.snapshot.dart'));
+        final result = await Process.run(Platform.executable, [
+          '--snapshot=${snapshot.path}',
+          '--package-root=${packageRoot.path}',
+          path
+        ]);
 
-          // Create script files
-          await createBashFile(bin, name, snapshot.absolute.path);
-          await createBatFile(bin, name, snapshot.absolute.path);
-          Logger().success('Successfully linked executables.');
+        if (result.stderr.isNotEmpty) {
+          stderr.writeln(result.stderr);
+          throw Exception("Could not create snapshot for package '$name'.");
         }
+
+        // Create script files
+        await createBashFile(bin, name, snapshot.absolute.path);
+        await createBatFile(bin, name, snapshot.absolute.path);
+        Logger().success('Successfully linked executables.');
       }
     }
+  }
+
+  Future<bool> _hasPermissionWindows() async {
+    final result = await Process.start(
+      'cmd',
+      [],
+      runInShell: true,
+    );
+
+    result.stdin.writeln('''
+date %date%
+if errorlevel 1 (
+   exit 500
+) else (
+   exit 200
+)
+''');
+    final bool hasPermission = await result.exitCode == 200;
+    if (!hasPermission) {
+      throw InsufficientPrivilegesException(
+          'Windows platform requires administrative rights or '
+          'enable developer mode to create symbolic links');
+    }
+    return hasPermission;
   }
 }

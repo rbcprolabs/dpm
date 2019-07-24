@@ -2,7 +2,7 @@
 
 <h2>
   <p align="center">
-    Run commands upon installing & upgrades packages, powerfull package management with CLI
+    Run commands upon installing & upgrades packages, powerfull package management with CLI. <b>Flutter</b> cappatible!
   </p>
 </h2>
 
@@ -14,11 +14,18 @@
 </p>
 
 <p align="center">
-  <a href="#usage">Usage</a> •
+  <a href="#how-to-use">Features</a> •
+  <a href="#how-to-use">How to use</a> •
   <a href="#available-commands">Available Commands</a>
 </p>
 
-# Usage
+# Features
+
+- Small weight
+- Productive development
+- Fast works
+
+# How to use
 ```bash
 $ pub global activate dpm
 ```
@@ -58,27 +65,16 @@ $ dpm build
 ```
 
 # Available Commands
-* [clean](#clean)
-* [get, upgrade](#get)
-* [link](#link)
-* [init](#init)
-* [install](#install)
+* [add](#add)
 * [remove](#remove)
+* [get](#get)
+* [init](#init)
+* [upgrade](#upgrade)
+* [link](#link)
+* [clean](#clean)
 * [reset](#reset)
 
-## clean
-Removes the `.dpm_bin` directory, if present.
-
-## get
-This script simply runs `pub get`, and then calls
-[`link`](#link).
-
-## init
-Essentially an `npm init` for Dart. This command will
-run you through a series of prompts, after which a `pubspec.yaml`
-will be generated for you.
-
-## install
+## Add
 Can be used to install dependencies without having to search
 the Pub directory for the current version.
 
@@ -111,7 +107,9 @@ $ dpm add --dev http test my-package@git://repo#dev
 $ dpm add --dry-run my-experimental-package
 ```
 
-## remove
+## Remove
+Can be used to remove dependencies without need go to file.
+
 ```bash
 # Remove specific package 
 $ dpm remove my-package 
@@ -119,11 +117,24 @@ $ dpm remove my-package
 # Remove multiple packages
 $ dpm remove my-package my-other-package
 ```
+## Get
+This script simply runs `pub get`, and then calls [`link`](#link).
 
-## link
+## init
+Essentially an `npm init` for Dart. This command will
+run you through a series of prompts, after which a `pubspec.yaml`
+will be generated for you.
+
+## Upgrade
+This script simply runs `pub upgrade`, and then calls [`link`](#link).
+
+## Link
 Creates symlinks to each dependency (in future versions, I
 will eliminate symlink use), and also creates executable files
 linked to any dependencies that export executables.
 
-## reset
+## Clean
+Removes the `.dpm_bin` directory, if present.
+
+## Reset
 Runs `clean`, followed by `get`.

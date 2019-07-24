@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:args/command_runner.dart';
+import 'package:dpm/src/services/pub_context.dart';
 import 'package:dpm/src/services/publock_loader.dart';
 import 'package:dpm/src/run.dart';
 import 'package:dpm/src/services/logger.dart';
@@ -23,11 +24,13 @@ class UpgradeCommand extends Command {
       args.addAll(argResults.rest);
     }
 
-    await Process.run('pub', args);
+    final publock = await loadPublock();
+
+    final process = await PubContext.fromPubLock(publock).start(args);
+    await stdout.addStream(process.stdout);
+    await stderr.addStream(process.stderr);
     // Logger().info('Now linking dependencies...');
     // await _link.run();
-
-    final publock = await loadPublock();
 
     for (final package in publock.packages) {
       final pubspec = await package.readPubspec();

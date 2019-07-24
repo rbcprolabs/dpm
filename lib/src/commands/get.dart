@@ -25,7 +25,9 @@ class GetCommand extends Command {
 
     final publock = await loadPublock();
 
-    await PubContext.fromPubLock(publock).run(args);
+    final process = await PubContext.fromPubLock(publock).start(args);
+    await stdout.addStream(process.stdout);
+    await stderr.addStream(process.stderr);
     // Logger().info('Now linking dependencies...');
     // await _link.run();
 

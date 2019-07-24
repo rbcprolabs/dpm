@@ -3,6 +3,10 @@
 [comment]: <> (### Breaking Changes or ### New Features)
 [comment]: <> (* Change description)
 
+## 0.1.0
+
+* Updated readme, fixed getting, upgrading & linking packages
+
 ## 0.0.2
 
 * Restore functionality

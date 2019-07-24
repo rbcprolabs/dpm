@@ -13,10 +13,7 @@ Future<void> runScript(
 }) async {
   final scripts = pubspec.unParsedYaml['scripts'] ?? {};
 
-  if (!scripts.containsKey(script) && !allowFail) {
-    throw ScriptDoesNotExistException('Could not find a script '
-        'named "$script" in project "${pubspec.name ?? '<untitled>'}".');
-  } else {
+  if (scripts.containsKey(script)) {
     final lines = scripts[script] is List ? scripts[script] : [scripts[script]];
 
     for (final line in lines) {
@@ -36,6 +33,9 @@ Future<void> runScript(
             'Script "$script" failed with exit code ${result.item1}.');
       }
     }
+  } else if (!allowFail) {
+    throw ScriptDoesNotExistException('Could not find a script '
+        'named "$script" in project "${pubspec.name ?? '<untitled>'}".');
   }
 }
 
