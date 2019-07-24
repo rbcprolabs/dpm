@@ -3,6 +3,10 @@
 [comment]: <> (### Breaking Changes or ### New Features)
 [comment]: <> (* Change description)
 
+## 0.1.2 
+
+* Added example
+
 ## 0.1.1
 
 * Fix flutter {get,update} capability
