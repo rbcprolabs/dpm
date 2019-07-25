@@ -2,7 +2,7 @@
 
 <h2>
   <p align="center">
-    Run commands upon installing & upgrades packages, powerfull package management with CLI. <b>Flutter</b> cappatible!
+    Run commands upon installing & upgrades packages, powerful package management with CLI. <b>Flutter</b> compatible!
   </p>
 </h2>
 
@@ -21,9 +21,9 @@
 
 # Features
 
-- Small weight
+- Lightweight
 - Productive development
-- Fast works
+- Fast!
 
 # How to use
 ```bash
@@ -41,8 +41,8 @@ You can run `dpm link` to link executables into `.dpm_bin`.
 
 # Running your own scripts
 It is very likely that you want to run your own scripts during
-development, or upon package installation. Do as follows in your
-`pubspec.yaml`:
+development, or upon package installation. To do so, edit your
+`pubspec.yaml` as follows:
 
 ```yaml
 name: foo
