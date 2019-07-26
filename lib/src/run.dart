@@ -1,72 +1,95 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:dpm/src/exceptions.dart';
+import 'package:dpm/src/models/publock.dart';
+import 'package:dpm/src/services/publock_loader.dart';
+import 'package:dpm/src/utils.dart';
 import 'package:pubspec/pubspec.dart';
-import 'package:tuple/tuple.dart';
+import 'package:path/path.dart' as path;
+import 'package:yaml/yaml.dart';
 
 Future<void> runScript(
   PubSpec pubspec,
   String script, {
+  List<String> args = const [],
   bool allowFail = false,
   Directory workingDir,
 }) async {
   final scripts = pubspec.unParsedYaml['scripts'] ?? {};
 
   if (scripts.containsKey(script)) {
-    final lines = scripts[script] is List ? scripts[script] : [scripts[script]];
+    print('run local script $script');
+    final List<String> lines =
+        scripts[script] is List ? scripts[script] : [scripts[script]];
 
     for (final line in lines) {
-      final result = await runLine(line, workingDir ?? Directory.current);
-      final String sout = result.item2.trim(), serr = result.item3.trim();
+      final splittedScriptLine = line.split(' ');
+      var program = splittedScriptLine.first;
+      splittedScriptLine.removeAt(0);
 
-      if (sout.isNotEmpty) {
-        print(sout);
+      if (pubspec.devDependencies.containsKey(program)) {
+        List<String> packageExecutable = [];
+        final publock = await loadPublock();
+        if (program.contains(':')) {
+          final package = split1(program, ':');
+          packageExecutable = await _packageExecutable(package.first,
+              executable: package.last, publock: publock);
+        } else {
+          packageExecutable =
+              await _packageExecutable(program, publock: publock);
+        }
+
+        program = packageExecutable.first;
+        splittedScriptLine.insertAll(0, packageExecutable..removeAt(0));
       }
 
-      if (serr.isNotEmpty) {
-        stderr.writeln(serr);
-      }
-
-      if (result.item1 != 0) {
-        throw Exception(
-            'Script "$script" failed with exit code ${result.item1}.');
-      }
+      final process = await Process.start(
+        program,
+        splittedScriptLine,
+        workingDirectory: (workingDir ?? Directory.current).absolute.path,
+        runInShell: true,
+      );
+      await stdout.addStream(process.stdout);
+      await stderr.addStream(process.stderr);
     }
+  } else if (pubspec.devDependencies.containsKey(split1(script, ':')[0])) {
+    final package = split1(script, ':');
+    print('run dev package ${package.first}');
+
+    final program =
+        await _packageExecutable(package.first, executable: package.last);
+
+    final process = await Process.start(
+      program.first,
+      (program..removeAt(0)) + args,
+      workingDirectory: (workingDir ?? Directory.current).absolute.path,
+      runInShell: true,
+    );
+    await stdout.addStream(process.stdout);
+    await stderr.addStream(process.stderr);
   } else if (!allowFail) {
-    throw ScriptDoesNotExistException('Could not find a script '
-        'named "$script" in project "${pubspec.name ?? '<untitled>'}".');
+    throw Errors.scriptDoesNotExis(script, pubspec.name);
   }
 }
 
-Future<Tuple3<int, String, String>> runLine(
-  String line,
-  Directory workingDir,
-) async {
-  var path = Platform.environment['PATH'];
-  final dpmBin = Directory.fromUri(Directory.current.uri.resolve('./.dpm_bin'));
-
-  if (await dpmBin.exists()) {
-    path = Platform.isWindows
-        ? '${dpmBin.absolute.uri};$path'
-        : '"${dpmBin.absolute.uri}":$path';
+Future<List<String>> _packageExecutable(
+  String package, {
+  String executable,
+  Publock publock,
+}) async {
+  final lock = publock ?? await loadPublock();
+  final packageDir = lock.packages[package].location;
+  final pubSpec = await PubSpec.load(packageDir);
+  if (!(pubSpec.unParsedYaml['executables'] is YamlMap)) {
+    return [package];
   }
-
-  final cli = await Process.start(
-    Platform.isWindows ? 'cmd' : 'bash',
-    [],
-    environment: {'PATH': path},
-    workingDirectory: workingDir.absolute.path,
-  );
-  cli.stdin
-    ..writeln(line)
-    ..writeln('exit 0')
-    // ignore: unawaited_futures
-    ..flush();
-
-  return Tuple3(
-    await cli.exitCode,
-    await cli.stdout.transform(Utf8Decoder()).join(),
-    await cli.stderr.transform(Utf8Decoder()).join(),
-  );
+  if (pubSpec.unParsedYaml['executables'][executable ?? package] == null) {
+    throw Errors.simple('Could not find a executable '
+        'named "$executable" in package "$package".');
+  }
+  return [
+    'dart',
+    path.join(packageDir.path, 'bin/',
+        pubSpec.unParsedYaml['executables'][executable ?? package] + '.dart')
+  ];
 }

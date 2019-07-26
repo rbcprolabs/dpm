@@ -3,6 +3,12 @@
 [comment]: <> (### Breaking Changes or ### New Features)
 [comment]: <> (* Change description)
 
+## 0.2.0
+
+* Fixed conlose colors
+* Updated run mechanism, now you can run dev_dependency
+example: `dpm font_generator --from ...` and can run dev_dependency with special executables: `dpm font_generator:executable_name --from ...`
+
 ## 0.1.3
 
 * Remove unused dependency

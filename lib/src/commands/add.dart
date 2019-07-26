@@ -136,8 +136,7 @@ class AddCommand extends Command {
       final response = await _client.get(Uri().resolve(apiRoot + dependency));
 
       if (response.statusCode == HttpStatus.notFound) {
-        throw PackageResolveException(
-            'Unable to resolve package within pub: "$dependency"');
+        throw Errors.packageResolve(dependency);
       } else {
         final package = jsonDecode(response.body);
         name = dependency;

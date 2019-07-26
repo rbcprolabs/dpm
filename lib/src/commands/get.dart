@@ -31,7 +31,7 @@ class GetCommand extends Command {
     // Logger().info('Now linking dependencies...');
     // await _link.run();
 
-    for (final package in publock.packages) {
+    for (final package in publock.packages.values) {
       final pubspec = await package.readPubspec();
       final unparsed = pubspec.unParsedYaml;
 

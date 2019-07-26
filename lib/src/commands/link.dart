@@ -43,7 +43,7 @@ class LinkCommand extends Command {
       await packageRoot.create(recursive: true);
     }
 
-    for (final pkg in lock.packages) {
+    for (final pkg in lock.packages.values) {
       // Create symlink
       final pubspec = await pkg.readPubspec();
       final link = Link.fromUri(packageRoot.uri.resolve('./${pubspec.name}'));
@@ -62,7 +62,7 @@ class LinkCommand extends Command {
       await link.create(uri, recursive: true);
     }
 
-    for (final pkg in lock.packages) {
+    for (final pkg in lock.packages.values) {
       final pubspec = await pkg.readPubspec();
       final Map executables = pubspec.unParsedYaml['executables'];
 
@@ -88,7 +88,7 @@ class LinkCommand extends Command {
 
         if (result.stderr.isNotEmpty) {
           stderr.writeln(result.stderr);
-          throw Exception("Could not create snapshot for package '$name'.");
+          throw Errors.simple("Could not create snapshot for package '$name'.");
         }
 
         // Create script files
@@ -116,9 +116,7 @@ if errorlevel 1 (
 ''');
     final bool hasPermission = await result.exitCode == 200;
     if (!hasPermission) {
-      throw InsufficientPrivilegesException(
-          'Windows platform requires administrative rights or '
-          'enable developer mode to create symbolic links');
+      throw Errors.insufficientPrivileges();
     }
     return hasPermission;
   }

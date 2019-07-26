@@ -10,10 +10,7 @@ class PubContext {
       : isFlutter = pubspec.dependencies.containsKey('flutter');
 
   PubContext.fromPubLock(Publock publock)
-      : isFlutter = publock.sdks.singleWhere(
-                (sdk) => sdk.name.contains('flutter'),
-                orElse: () => null) !=
-            null;
+      : isFlutter = publock.sdks.containsKey('flutter');
 
   final bool isFlutter;
 

@@ -1,25 +1,23 @@
-import 'package:dpm/src/models/publock_sdk.dart';
 import 'package:yaml/yaml.dart';
 
 import 'package.dart';
 
 class Publock {
   Publock({
-    List<PubPackage> packages = const [],
-    List<PubLockSdk> sdks = const [],
-  }) {
-    this..packages.addAll(packages)..sdks.addAll(sdks);
-  }
+    this.packages = const {},
+    this.sdks = const {},
+  });
 
   factory Publock.fromMap(YamlMap data) {
-    final packages = <PubPackage>[], sdks = <PubLockSdk>[];
+    final packages = <String, PubPackage>{};
+    final sdks = <String, String>{};
 
     (data['packages'] as YamlMap).forEach((name, data) {
-      packages.add(PubPackage.fromMap({'name': name, ...data}));
+      packages[name] = PubPackage.fromMap({'name': name, ...data});
     });
 
     (data['sdks'] as YamlMap).forEach((name, version) {
-      sdks.add(PubLockSdk(name, version));
+      sdks[name] = version;
     });
 
     return Publock(
@@ -28,6 +26,6 @@ class Publock {
     );
   }
 
-  final List<PubPackage> packages = [];
-  final List<PubLockSdk> sdks = [];
+  final Map<String, PubPackage> packages;
+  final Map<String, String> sdks;
 }

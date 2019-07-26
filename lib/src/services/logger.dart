@@ -4,8 +4,9 @@ class Logger {
   factory Logger() => const Logger._internal();
   const Logger._internal();
 
-  void info(String message) => print(TextPen().text(message).white());
-  void success(String message) => print(TextPen().text(message).green());
-  void warning(String message) => print(TextPen().text(message).yellow());
-  void error(String message) => print(TextPen().text(message).red());
+  void info(String message) => print(message);
+  void success(String message) =>
+      TextPen().green().text(message).normal().print();
+  void warning(String message) => TextPen().yellow().text(message).print();
+  void error(String message) => TextPen().red().text(message).print();
 }

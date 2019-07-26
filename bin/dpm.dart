@@ -23,16 +23,14 @@ void main(List<String> args) async {
     if (exception is UsageException) {
       final pubspec = await PubSpec.load(Directory.current);
 
-      for (final arg in args) {
-        try {
-          await runScript(pubspec, arg);
-        } on ScriptDoesNotExistException catch (exception) {
-          Logger().error(exception.message);
-          return exit(1);
-        } catch (_exception, stackTrace) {
-          Logger().error('ERR: $_exception \n $stackTrace');
-          return exit(1);
-        }
+      try {
+        await runScript(pubspec, args.first, args: args..removeAt(0));
+      } on ScriptDoesNotExistException catch (exception) {
+        Logger().error(exception.message);
+        return exit(1);
+      } catch (_exception, stackTrace) {
+        Logger().error('ERR: $_exception \n $stackTrace');
+        return exit(1);
       }
     } else {
       Logger().error(exception.toString());
