@@ -3,6 +3,10 @@
 [comment]: <> (### Breaking Changes or ### New Features)
 [comment]: <> (* Change description)
 
+## 0.2.1
+
+* Update flutter check method
+
 ## 0.2.0
 
 * Fixed conlose colors

@@ -10,7 +10,7 @@ class PubContext {
       : isFlutter = pubspec.dependencies.containsKey('flutter');
 
   PubContext.fromPubLock(Publock publock)
-      : isFlutter = publock.sdks.containsKey('flutter');
+      : isFlutter = publock.packages.containsKey('flutter');
 
   final bool isFlutter;
 
@@ -22,7 +22,7 @@ class PubContext {
     }
 
     return Process.start(
-      !isFlutter ? 'pub' : 'flutter packages',
+      !isFlutter ? 'pub' : 'flutter pub',
       arguments,
       runInShell: true,
     );
