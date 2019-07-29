@@ -3,6 +3,10 @@
 [comment]: <> (### Breaking Changes or ### New Features)
 [comment]: <> (* Change description)
 
+## 0.2.2
+
+* Fixed script run error on *unix systems (#3)
+
 ## 0.2.1
 
 * Update flutter check method

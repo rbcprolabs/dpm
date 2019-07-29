@@ -22,9 +22,15 @@ void main(List<String> args) async {
   } catch (exception) {
     if (exception is UsageException) {
       final pubspec = await PubSpec.load(Directory.current);
+      final preparedArgs = List<String>.from(args);
+      final script = preparedArgs.removeAt(0);
 
       try {
-        await runScript(pubspec, args.first, args: args..removeAt(0));
+        await runScript(
+          pubspec,
+          script,
+          args: preparedArgs,
+        );
       } on ScriptDoesNotExistException catch (exception) {
         Logger().error(exception.message);
         return exit(1);
