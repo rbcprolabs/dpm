@@ -10,8 +10,8 @@ class DpmException implements Exception {
   String toString() => message;
 }
 
-class PackageResolveException extends DpmException {
-  PackageResolveException(String message) : super(message);
+class PackageNotFoundException extends DpmException {
+  PackageNotFoundException(String message) : super(message);
 }
 
 class ScriptDoesNotExistException extends DpmException {
@@ -26,8 +26,8 @@ class InsufficientPrivilegesException extends DpmException {
 class Errors {
   static DpmException simple(String message) => DpmException(message);
 
-  static DpmException packageResolve(String packageName) =>
-      PackageResolveException(
+  static DpmException packageNotFound(String packageName) =>
+      PackageNotFoundException(
           'Unable to resolve package within pub: "$packageName"');
 
   static DpmException scriptDoesNotExis(String script, String package) =>

@@ -5,7 +5,6 @@ import 'package:dpm/src/services/publock_loader.dart';
 import 'package:dpm/src/run.dart';
 import 'package:dpm/src/services/logger.dart';
 import 'package:pubspec/pubspec.dart';
-// import 'link.dart';
 
 class UpgradeCommand extends Command {
   @override
@@ -14,7 +13,6 @@ class UpgradeCommand extends Command {
   @override
   String get description =>
       'Runs pub upgrade, and then runs dpm of any dependencies.';
-  // final LinkCommand _link = LinkCommand();
 
   @override
   Future<void> run() async {
@@ -29,8 +27,6 @@ class UpgradeCommand extends Command {
     final process = await PubContext.fromPubLock(publock).start(args);
     await stdout.addStream(process.stdout);
     await stderr.addStream(process.stderr);
-    // Logger().info('Now linking dependencies...');
-    // await _link.run();
 
     for (final package in publock.packages.values) {
       final pubspec = await package.readPubspec();

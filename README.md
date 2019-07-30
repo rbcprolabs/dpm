@@ -55,7 +55,7 @@ scripts:
   post_upgrade: echo ":)"
 ```
 
-Installed dependencies with executables will automatically be
+Installed dev dependencies with executables will automatically be
 filled in to the `PATH` during script execution.
 
 Then, in your project root, you can run:
@@ -69,9 +69,6 @@ $ dpm build
 * [get](#get)
 * [init](#init)
 * [upgrade](#upgrade)
-* [link](#link)
-* [clean](#clean)
-* [reset](#reset)
 
 ## Add
 Can be used to install dependencies without having to search
@@ -117,7 +114,7 @@ $ dpm remove my-package
 $ dpm remove my-package my-other-package
 ```
 ## Get
-This script simply runs `pub get`, and then calls [`link`](#link).
+This script simply runs `pub get`.
 
 ## init
 Essentially an `npm init` for Dart. This command will
@@ -125,15 +122,4 @@ run you through a series of prompts, after which a `pubspec.yaml`
 will be generated for you.
 
 ## Upgrade
-This script simply runs `pub upgrade`, and then calls [`link`](#link).
-
-## Link
-Creates symlinks to each dependency (in future versions, I
-will eliminate symlink use), and also creates executable files
-linked to any dependencies that export executables.
-
-## Clean
-Removes the `.dpm_bin` directory, if present.
-
-## Reset
-Runs `clean`, followed by `get`.
+This script simply runs `pub upgrade`.

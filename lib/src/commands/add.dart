@@ -80,7 +80,7 @@ class AddCommand extends Command {
           try {
             final dep = await resolvePubDep(dependency, pubApiRoot);
             targetMap[dep.item1] = dep.item2;
-          } on PackageResolveException catch (error) {
+          } on PackageNotFoundException catch (error) {
             Logger().error(error.message);
             return exit(1);
           }
@@ -101,7 +101,6 @@ class AddCommand extends Command {
 
       if (argResults['dry-run']) {
         return Logger().info(toYamlString(pubspec.toJson()));
-        // return Logger().info(YamlToString().toYamlString(pubspec.toJson()));
       } else {
         await pubspec.save(Directory.current);
         Logger().success('Now installing dependencies...');
@@ -136,7 +135,7 @@ class AddCommand extends Command {
       final response = await _client.get(Uri().resolve(apiRoot + dependency));
 
       if (response.statusCode == HttpStatus.notFound) {
-        throw Errors.packageResolve(dependency);
+        throw Errors.packageNotFound(dependency);
       } else {
         final package = jsonDecode(response.body);
         name = dependency;

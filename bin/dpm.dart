@@ -7,14 +7,10 @@ import 'package:dpm/dpm.dart';
 void main(List<String> args) async {
   final runner = CommandRunner(
       'dpm', 'Run commands upon installing Dart packages, and more.')
-    ..addCommand(CleanCommand())
     ..addCommand(GetCommand())
-    ..addCommand(IgnoreCommand())
     ..addCommand(InitCommand())
     ..addCommand(AddCommand())
     ..addCommand(RemoveCommand())
-    ..addCommand(LinkCommand())
-    ..addCommand(ResetCommand())
     ..addCommand(UpgradeCommand());
 
   try {
