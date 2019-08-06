@@ -3,6 +3,10 @@
 [comment]: <> (### Breaking Changes or ### New Features)
 [comment]: <> (* Change description)
 
+## 0.2.3
+
+* Fixed the ubiquitous use of quotes [see PR to Andersmholmgren/pubspec](https://github.com/Andersmholmgren/pubspec/pull/10)
+
 ## 0.2.2
 
 * Fixed script run error on *unix systems (#3)

@@ -1,6 +1,6 @@
 name: dpm
 author: Serge Shkurko <SergeShkurko@outlook.com>
-version: 0.2.2
+version: 0.2.3
 homepage: https://github.com/rbcprolabs/dpm
 description: Run commands upon installing & upgrades packages, powerfull package management with CLI. Flutter cappatible!
 environment:
@@ -12,11 +12,7 @@ dependencies:
   console: ^3.1.0
   path: ^1.6.2
   meta: ^1.1.7
-  pubspec: ^0.1.1
-  # pubspec:
-  #   git:
-  #     url: git://github.com/SergeShkurko/pubspec.git
-  #     ref: master
+  pubspec: ^0.1.2
   register: ^1.0.0
   yaml: ^2.1.16
   tuple: ^1.0.2
