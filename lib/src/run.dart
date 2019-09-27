@@ -24,24 +24,8 @@ Future<void> runScript(
 
     for (final line in lines) {
       final splittedScriptLine = line.split(' ');
-      var program = splittedScriptLine.first;
+      final program = splittedScriptLine.first;
       splittedScriptLine.removeAt(0);
-
-      if (pubspec.devDependencies.containsKey(program)) {
-        List<String> packageExecutable = [];
-        final publock = await loadPublock();
-        if (program.contains(':')) {
-          final package = split1(program, ':');
-          packageExecutable = await _packageExecutable(package.first,
-              executable: package.last, publock: publock);
-        } else {
-          packageExecutable =
-              await _packageExecutable(program, publock: publock);
-        }
-
-        program = packageExecutable.first;
-        splittedScriptLine.insertAll(0, packageExecutable..removeAt(0));
-      }
 
       final process = await Process.start(
         program,
@@ -89,7 +73,7 @@ Future<List<String>> _packageExecutable(
   }
   return [
     'dart',
-    path.join(packageDir.path, 'bin/',
+    path.join(packageDir.path, 'bin\\',
         pubSpec.unParsedYaml['executables'][executable ?? package] + '.dart')
   ];
 }
